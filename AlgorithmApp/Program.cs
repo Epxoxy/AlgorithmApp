@@ -19,18 +19,19 @@ namespace AlgorithmApp
             quickSort(a, 0, a.Length - 1);
             printf(a);
 
-            Console.WriteLine("\nEgypt fraction");
-            egyptFraction(6, 7);
-
             Console.WriteLine("\nMake change");
-            int[] changes = makeChange(83, new int[]{ 50,20,10,5,1});
+            int[] changes = makeChange(83, new int[] { 50, 20, 10, 5, 1 });
             printf(changes);
 
+            Console.WriteLine("\nEgypt fraction");
+            egyptFraction(6, 7);
+            
             Console.WriteLine("\nMin matrix multiply times");
             int[] matrix = new int[] { 30, 35, 15, 5, 10, 20, 25 };
             int[,] m, s;
             minMatrixMultiplyTimes(matrix, matrix.Length - 1, out m, out s);
             Console.WriteLine(m[0, m.GetLength(0) - 1]);
+            printMatrix(s, 0, m.GetLength(0) - 1);
 
             Console.ReadKey();
         }
@@ -40,6 +41,19 @@ namespace AlgorithmApp
             for (int i = 0; i < a.Length; i++)
                 Console.Write(a[i] + " ");
             Console.WriteLine();
+        }
+
+        static void printMatrix(int[,] s, int l, int r)
+        {
+            if (l == r)
+                Console.Write("A" + l);
+            else
+            {
+                Console.Write("(");
+                printMatrix(s, l, l + s[l, r]);
+                printMatrix(s, l + s[l, r] + 1, r);
+                Console.Write(")");
+            }
         }
 
         static void minMatrixMultiplyTimes(int[] p, int num, out int[,] m, out int[,] s)
