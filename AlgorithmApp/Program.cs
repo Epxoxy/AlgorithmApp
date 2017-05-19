@@ -33,10 +33,10 @@ namespace AlgorithmApp
             Console.WriteLine(m[0, m.GetLength(0) - 1]);
             printMatrix(s, 0, m.GetLength(0) - 1);
 
-            //For test prime ring
+            //For testing prime ring
             //new PrimeRing().run();
 
-            //For test horse go
+            //For testing horse go
             //new HorseGoTest().run();
 
             Console.ReadKey();
