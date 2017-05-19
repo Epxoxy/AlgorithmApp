@@ -33,6 +33,12 @@ namespace AlgorithmApp
             Console.WriteLine(m[0, m.GetLength(0) - 1]);
             printMatrix(s, 0, m.GetLength(0) - 1);
 
+            //For test prime ring
+            //new PrimeRing().run();
+
+            //For test horse go
+            //new HorseGoTest().run();
+
             Console.ReadKey();
         }
 
@@ -41,6 +47,13 @@ namespace AlgorithmApp
             for (int i = 0; i < a.Length; i++)
                 Console.Write(a[i] + " ");
             Console.WriteLine();
+        }
+
+        static void debugf(int[] a)
+        {
+            for (int i = 0; i < a.Length; i++)
+                System.Diagnostics.Debug.Write(a[i] + " ");
+            System.Diagnostics.Debug.WriteLine("");
         }
 
         static void printMatrix(int[,] s, int l, int r)
@@ -55,7 +68,7 @@ namespace AlgorithmApp
                 Console.Write(")");
             }
         }
-
+        
         static void minMatrixMultiplyTimes(int[] p, int num, out int[,] m, out int[,] s)
         {
             int i, j, k;
@@ -166,5 +179,128 @@ namespace AlgorithmApp
                 a[start + i] = tmp[i];
         }
 
+    }
+
+    class PrimeRing
+    {
+        public void run()
+        {
+            Console.WriteLine("PrimeRing start.");
+            int[] src = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+            int[] rt = new int[src.Length];
+            rt[0] = src[0];
+            src[0] = 0;
+            fitNext(src, rt, rt[0], 1);
+            Console.WriteLine("PrimeRing completed.");
+        }
+
+        void printf(int[] a)
+        {
+            for (int i = 0; i < a.Length; i++)
+                Console.Write(a[i] + " ");
+            Console.WriteLine();
+        }
+        
+        void fitNext(int[] s, int[] rt, int last, int k)
+        {
+            if (k == rt.Length)
+            {
+                if (isPrime(rt[k - 1] + rt[0]))
+                    printf(rt);
+            }
+            else
+            {
+                for (int i = 0; i < s.Length; i++)
+                {
+                    if (s[i] <= 0) continue;
+                    if (isPrime(last + s[i]))
+                    {
+                        //set value to find next.
+                        int nlast = s[i];
+                        rt[k] = nlast;
+                        s[i] = 0;
+
+                        fitNext(s, rt, rt[k], k + 1);
+
+                        //restore value when last brach completed.
+                        rt[k] = 0;
+                        s[i] = nlast;
+                    }
+                }
+            }
+        }
+
+        static bool isPrime(int n)
+        {
+            if (n == 1 || n == 2 || n == 3) return true;
+            for (int i = 2; i < n; i++)
+                if (n % i == 0) return false;
+            return true;
+        }
+
+    }
+
+    class HorseGoTest
+    {
+        private int[] dx = new int[] { -2, -1, 1, 2,  2,  1, -1, -2 };
+        private int[] dy = new int[] {  1,  2, 2, 1, -1, -2, -2, -1 };
+        private int[,] board;
+        private int valid = 0;
+        private int max = 6;
+        
+        public void run()
+        {
+            Console.WriteLine("HorseGoTest start.");
+            board = new int[max, max];
+            for (int i = 0; i < board.GetLength(0); i++)
+                for (int j = 0; j < board.GetLength(1); j++)
+                    board[i, j] = 0;
+            board[0, 0] = 1;
+            goNext(0, 0, 1);
+            Console.WriteLine("HorseGoTest completed.");
+        }
+
+        private void printf(int[,] a)
+        {
+            for (int i = 0; i < a.GetLength(0); i++)
+            {
+                for (int j = 0; j < a.GetLength(1); j++)
+                {
+                    Console.Write(string.Format(" | {0:D2}", a[i, j]));
+                }
+                Console.WriteLine("\n -----------------------------");
+            }
+        }
+
+        private void goNext(int x, int y, int k)
+        {
+            if (k == max * max)
+            {
+                Console.WriteLine("\n -------- graph start --------");
+                printf(board);
+            }
+            else
+            {
+                for (int i = 0; i < dx.Length; i++)
+                {
+                    int nx = x + dx[i];
+                    int ny = y + dy[i];
+                    if(isValid(nx, ny))
+                    {
+                        board[nx, ny] = k + 1;
+                        goNext(nx, ny, k + 1);
+                        board[nx, ny] = valid;
+                    }
+                }
+            }
+        }
+
+        bool isValid(int x, int y)
+        {
+            return x >= 0 && y >= 0
+                && x < board.GetLength(0) 
+                && y < board.GetLength(1)
+                && board[x, y] == valid;
+        }
     }
 }
