@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AlgorithmApp
 {
@@ -34,7 +35,7 @@ namespace AlgorithmApp
             printMatrix(s, 0, m.GetLength(0) - 1);
 
             //For testing prime ring
-            //new PrimeRing().run();
+            new PrimeRing().run();
 
             //For testing horse go
             //new HorseGoTest().run();
@@ -183,15 +184,35 @@ namespace AlgorithmApp
 
     class PrimeRing
     {
+        private int[] primes = null;
+        private int rCount = 0;
         public void run()
         {
-            Console.WriteLine("PrimeRing start.");
+            Console.WriteLine("\nPrimeRing start.");
             int[] src = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
             int[] rt = new int[src.Length];
+            //Help array
+            primes = genPrimes(sumMaxSum(src) + 1);
+
             rt[0] = src[0];
             src[0] = 0;
             fitNext(src, rt, rt[0], 1);
+            Console.WriteLine(rCount);
             Console.WriteLine("PrimeRing completed.");
+        }
+
+        int sumMaxSum(int[] a)
+        {
+            int max = 0, subMax = 0;
+            for (int i = 0; i < a.Length; i++)
+            {
+                if (a[i] > max)
+                {
+                    subMax = max;
+                    max = a[i];
+                }
+            }
+            return subMax + max;
         }
 
         void printf(int[] a)
@@ -201,40 +222,62 @@ namespace AlgorithmApp
             Console.WriteLine();
         }
         
-        void fitNext(int[] s, int[] rt, int last, int k)
+        int[] genPrimes(int n)
         {
-            if (k == rt.Length)
+            int[] a = new int[n];
+            for (int i = 2; i < a.Length; i++)
+                a[i] = 1;
+            for (int i = 2; i < n; i++)
+                if (a[i] == 1)
+                    for (int j = i + i; j < n; j += i)
+                        if (j % i == 0)
+                            a[j] = 0;
+            return a;
+        }
+        
+        void fitNext(int[] s, int[] rs, int last, int k)
+        {
+            if (k == rs.Length)
             {
-                if (isPrime(rt[k - 1] + rt[0]))
-                    printf(rt);
+                if (primes[rs[k - 1] + rs[0]] == 1)
+                {
+                    ++rCount;
+                    //printf(rs);
+                }
             }
             else
             {
                 for (int i = 0; i < s.Length; i++)
                 {
                     if (s[i] <= 0) continue;
-                    if (isPrime(last + s[i]))
+                    if (primes[last + s[i]] == 1)
                     {
                         //set value to find next.
                         int nlast = s[i];
-                        rt[k] = nlast;
+                        rs[k] = nlast;
                         s[i] = 0;
 
-                        fitNext(s, rt, rt[k], k + 1);
+                        fitNext(s, rs, rs[k], k + 1);
 
                         //restore value when last brach completed.
-                        rt[k] = 0;
+                        rs[k] = 0;
                         s[i] = nlast;
                     }
                 }
             }
         }
 
-        static bool isPrime(int n)
+        //Not in use
+        static bool isPrime6(int n)
         {
-            if (n == 1 || n == 2 || n == 3) return true;
-            for (int i = 2; i < n; i++)
-                if (n % i == 0) return false;
+            if (n < 4) return n > 1;
+            else if (n % 2 == 0 || n % 3 == 0)
+                return false;
+
+            int k = (int)Math.Sqrt(n) + 1;
+            for (int i = 5; i <= k; i += 2)
+                if (n % i == 0 || n % (i + 2) == 0)
+                    return false;
             return true;
         }
 
