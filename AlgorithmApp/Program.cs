@@ -38,7 +38,7 @@ namespace AlgorithmApp
             new PrimeRing().run();
 
             //For testing horse go
-            //new HorseGoTest().run();
+            new HorseGoTest().run();
 
             Console.ReadKey();
         }
@@ -185,7 +185,7 @@ namespace AlgorithmApp
     class PrimeRing
     {
         private int[] primes = null;
-        private int rCount = 0;
+        private int total = 0;
         public void run()
         {
             Console.WriteLine("\nPrimeRing start.");
@@ -193,11 +193,12 @@ namespace AlgorithmApp
             int[] rt = new int[src.Length];
             //Help array
             primes = genPrimes(sumMaxSum(src) + 1);
+            total = 0;
 
             rt[0] = src[0];
             src[0] = 0;
             fitNext(src, rt, rt[0], 1);
-            Console.WriteLine(rCount);
+            Console.WriteLine("Total " + total);
             Console.WriteLine("PrimeRing completed.");
         }
 
@@ -241,7 +242,7 @@ namespace AlgorithmApp
             {
                 if (primes[rs[k - 1] + rs[0]] == 1)
                 {
-                    ++rCount;
+                    ++total;
                     //printf(rs);
                 }
             }
@@ -290,6 +291,7 @@ namespace AlgorithmApp
         private int[,] board;
         private int valid = 0;
         private int max = 6;
+        private int total;
         
         public void run()
         {
@@ -298,8 +300,10 @@ namespace AlgorithmApp
             for (int i = 0; i < board.GetLength(0); i++)
                 for (int j = 0; j < board.GetLength(1); j++)
                     board[i, j] = 0;
+            total = 0;
             board[0, 0] = 1;
             goNext(0, 0, 1);
+            Console.WriteLine("Total " + total);
             Console.WriteLine("HorseGoTest completed.");
         }
 
@@ -319,8 +323,9 @@ namespace AlgorithmApp
         {
             if (k == max * max)
             {
-                Console.WriteLine("\n -------- graph start --------");
-                printf(board);
+                ++total;
+                //Console.WriteLine("\n -------- graph start --------");
+                //printf(board);
             }
             else
             {
