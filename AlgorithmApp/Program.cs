@@ -35,9 +35,11 @@ namespace AlgorithmApp
             printMatrix(s, 0, m.GetLength(0) - 1);
 
             //For testing prime ring
+            //Not solve -> Use long time
             //new PrimeRing().run();
 
             //For testing horse go
+            //Not solve -> Use long time
             //new HorseGoTest().run();
 
             new WordChains().run();
@@ -286,84 +288,6 @@ namespace AlgorithmApp
 
     }
 
-    class WordChains
-    {
-        private int max;
-        private List<int[]> maxList;
-        public void run()
-        {
-            string[] words = { "arachnid", "aloha", "dog", "rat", "tiger","gopher"};
-            char[,] set = new char[words.Length, 3];
-            for (int i = 0; i < words.Length; i++)
-            {
-                set[i, 0] = words[i][0];//First char
-                set[i, 1] = words[i][words[i].Length - 1];//Last char
-                set[i, 2] = '1';//State
-            }
-
-            Console.WriteLine("\nWordChains");
-            max = 0;
-            maxList = new List<int[]>();
-            for (int i = 0; i < set.GetLength(0); i++)
-            {
-                int[] rt = new int[words.Length];
-                rt[0] = i + 1;
-                set[i, 2] = '0';
-                doFind(set, rt, set[i, 1], 1);
-            }
-            foreach (var rt in maxList)
-            {
-                for (int i = 0; i < rt.Length; i++)
-                    Console.Write(words[rt[i] - 1] + " ");
-                Console.WriteLine();
-            }
-        }
-
-        private void doFind(char[,] c, int[] rt, char last, int k)
-        {
-            if(k == rt.Length)
-            {
-                testMax(rt);
-            }
-            else
-            {
-                for (int i = 0; i < c.GetLength(0); i++)
-                {
-                    if (c[i, 2] == '0') continue;
-                    if (last == c[i, 0])
-                    {
-                        c[i, 2] = '0';
-                        rt[k] = i + 1;
-                        doFind(c, rt, c[i, 1], k + 1);
-                        rt[k] = 0;
-                        c[i, 2] = '1';
-                    }
-                }
-                testMax(rt);
-            }
-        }
-        
-        private void testMax(int[] a)
-        {
-            for (int i = 0; i < a.Length; i++)
-            {
-                if (a[i] == 0)
-                {
-                    if (i < max) break;
-                    if (i > max)
-                    {
-                        max = i;
-                        maxList.Clear();
-                    }
-                    int[] rt = new int[i];
-                    for (int j = 0; j < rt.Length; j++)
-                        rt[j] = a[j];
-                    maxList.Add(rt);
-                }
-            }
-        }
-    }
-
     class HorseGoTest
     {
         private int[] dx = new int[] { -2, -1, 1, 2,  2,  1, -1, -2 };
@@ -386,6 +310,7 @@ namespace AlgorithmApp
             Console.WriteLine("Total " + total);
             System.Diagnostics.Debug.WriteLine("Total " + total);
             Console.WriteLine("HorseGoTest completed.");
+            //524486
         }
 
         private void printf(int[,] a)
@@ -431,6 +356,98 @@ namespace AlgorithmApp
                 && x < board.GetLength(0) 
                 && y < board.GetLength(1)
                 && board[x, y] == valid;
+        }
+    }
+
+
+    class WordChains
+    {
+        private int max;
+        private List<int[]> maxList;
+        public void run()
+        {
+            string[] words = { "arachnid", "aloha", "dog", "rat", "tiger", "gopher" };
+            char[,] set = new char[words.Length, 3];
+
+            //Initilize
+            for (int i = 0; i < words.Length; i++)
+            {
+                set[i, 0] = words[i][0];//First char
+                set[i, 1] = words[i][words[i].Length - 1];//Last char
+                set[i, 2] = '1';//State
+            }
+
+            Console.WriteLine("\nWordChains test");
+
+            max = 0;
+            maxList = new List<int[]>();
+            //Find for any one as beginner
+            for (int i = 0; i < set.GetLength(0); i++)
+            {
+                int[] rt = new int[words.Length];
+                rt[0] = i + 1;
+                set[i, 2] = '0';
+                doFind(set, rt, set[i, 1], 1);
+            }
+            //Print result
+            foreach (var rt in maxList)
+            {
+                for (int i = 0; i < rt.Length; i++)
+                    Console.Write(words[rt[i] - 1] + " ");
+                Console.WriteLine();
+            }
+        }
+
+        private void doFind(char[,] c, int[] rt, char last, int k)
+        {
+            if (k == rt.Length)
+            {
+                testMax(rt);
+            }
+            else
+            {
+                for (int i = 0; i < c.GetLength(0); i++)
+                {
+                    if (c[i, 2] == '0') continue;
+                    if (last == c[i, 0])
+                    {
+                        //Set status as '0'
+                        //Ensure not visit it again
+                        c[i, 2] = '0';
+                        rt[k] = i + 1;
+
+                        //Base on this one found
+                        //To find next one
+                        doFind(c, rt, c[i, 1], k + 1);
+
+                        //Recover default value
+                        //For continue next test
+                        rt[k] = 0;
+                        c[i, 2] = '1';
+                    }
+                }
+                testMax(rt);
+            }
+        }
+
+        private void testMax(int[] a)
+        {
+            for (int i = 0; i < a.Length; i++)
+            {
+                if (a[i] == 0)
+                {
+                    if (i < max) break;
+                    if (i > max)
+                    {
+                        max = i;
+                        maxList.Clear();
+                    }
+                    int[] rt = new int[i];
+                    for (int j = 0; j < rt.Length; j++)
+                        rt[j] = a[j];
+                    maxList.Add(rt);
+                }
+            }
         }
     }
 }
