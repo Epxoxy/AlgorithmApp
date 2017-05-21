@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace AlgorithmApp
 {
@@ -364,6 +365,8 @@ namespace AlgorithmApp
     {
         private int max;
         private List<int[]> maxList;
+        private char yes = '1';
+        private char no = '0';
         public void run()
         {
             string[] words = { "arachnid", "aloha", "dog", "rat", "tiger", "gopher" };
@@ -374,21 +377,14 @@ namespace AlgorithmApp
             {
                 set[i, 0] = words[i][0];//First char
                 set[i, 1] = words[i][words[i].Length - 1];//Last char
-                set[i, 2] = '1';//State
+                set[i, 2] = yes;//State
             }
 
             Console.WriteLine("\nWordChains test");
 
             max = 0;
             maxList = new List<int[]>();
-            //Find for any one as beginner
-            for (int i = 0; i < set.GetLength(0); i++)
-            {
-                int[] rt = new int[words.Length];
-                rt[0] = i + 1;
-                set[i, 2] = '0';
-                doFind(set, rt, set[i, 1], 1);
-            }
+            doFind(set, new int[words.Length], char.MinValue, 0);
             //Print result
             foreach (var rt in maxList)
             {
@@ -402,18 +398,18 @@ namespace AlgorithmApp
         {
             if (k == rt.Length)
             {
-                testMax(rt);
+                tryAddMax(rt);
             }
             else
             {
                 for (int i = 0; i < c.GetLength(0); i++)
                 {
-                    if (c[i, 2] == '0') continue;
-                    if (last == c[i, 0])
+                    if (c[i, 2] == no) continue;
+                    if (k == 0 || last == c[i, 0])
                     {
-                        //Set status as '0'
+                        //Set status to no
                         //Ensure not visit it again
-                        c[i, 2] = '0';
+                        c[i, 2] = no;
                         rt[k] = i + 1;
 
                         //Base on this one found
@@ -423,14 +419,14 @@ namespace AlgorithmApp
                         //Recover default value
                         //For continue next test
                         rt[k] = 0;
-                        c[i, 2] = '1';
+                        c[i, 2] = yes;
                     }
                 }
-                testMax(rt);
+                tryAddMax(rt);
             }
         }
 
-        private void testMax(int[] a)
+        private void tryAddMax(int[] a)
         {
             for (int i = 0; i < a.Length; i++)
             {
