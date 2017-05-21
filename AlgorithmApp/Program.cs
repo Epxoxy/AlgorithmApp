@@ -35,10 +35,12 @@ namespace AlgorithmApp
             printMatrix(s, 0, m.GetLength(0) - 1);
 
             //For testing prime ring
-            new PrimeRing().run();
+            //new PrimeRing().run();
 
             //For testing horse go
-            new HorseGoTest().run();
+            //new HorseGoTest().run();
+
+            new WordChains().run();
 
             Console.ReadKey();
         }
@@ -284,6 +286,84 @@ namespace AlgorithmApp
 
     }
 
+    class WordChains
+    {
+        private int max;
+        private List<int[]> maxList;
+        public void run()
+        {
+            string[] words = { "arachnid", "aloha", "dog", "rat", "tiger","gopher"};
+            char[,] set = new char[words.Length, 3];
+            for (int i = 0; i < words.Length; i++)
+            {
+                set[i, 0] = words[i][0];//First char
+                set[i, 1] = words[i][words[i].Length - 1];//Last char
+                set[i, 2] = '1';//State
+            }
+
+            Console.WriteLine("\nWordChains");
+            max = 0;
+            maxList = new List<int[]>();
+            for (int i = 0; i < set.GetLength(0); i++)
+            {
+                int[] rt = new int[words.Length];
+                rt[0] = i + 1;
+                set[i, 2] = '0';
+                doFind(set, rt, set[i, 1], 1);
+            }
+            foreach (var rt in maxList)
+            {
+                for (int i = 0; i < rt.Length; i++)
+                    Console.Write(words[rt[i] - 1] + " ");
+                Console.WriteLine();
+            }
+        }
+
+        private void doFind(char[,] c, int[] rt, char last, int k)
+        {
+            if(k == rt.Length)
+            {
+                testMax(rt);
+            }
+            else
+            {
+                for (int i = 0; i < c.GetLength(0); i++)
+                {
+                    if (c[i, 2] == '0') continue;
+                    if (last == c[i, 0])
+                    {
+                        c[i, 2] = '0';
+                        rt[k] = i + 1;
+                        doFind(c, rt, c[i, 1], k + 1);
+                        rt[k] = 0;
+                        c[i, 2] = '1';
+                    }
+                }
+                testMax(rt);
+            }
+        }
+        
+        private void testMax(int[] a)
+        {
+            for (int i = 0; i < a.Length; i++)
+            {
+                if (a[i] == 0)
+                {
+                    if (i < max) break;
+                    if (i > max)
+                    {
+                        max = i;
+                        maxList.Clear();
+                    }
+                    int[] rt = new int[i];
+                    for (int j = 0; j < rt.Length; j++)
+                        rt[j] = a[j];
+                    maxList.Add(rt);
+                }
+            }
+        }
+    }
+
     class HorseGoTest
     {
         private int[] dx = new int[] { -2, -1, 1, 2,  2,  1, -1, -2 };
@@ -304,6 +384,7 @@ namespace AlgorithmApp
             board[0, 0] = 1;
             goNext(0, 0, 1);
             Console.WriteLine("Total " + total);
+            System.Diagnostics.Debug.WriteLine("Total " + total);
             Console.WriteLine("HorseGoTest completed.");
         }
 
@@ -324,6 +405,7 @@ namespace AlgorithmApp
             if (k == max * max)
             {
                 ++total;
+                //524486
                 //Console.WriteLine("\n -------- graph start --------");
                 //printf(board);
             }
