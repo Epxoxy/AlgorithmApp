@@ -366,30 +366,31 @@ namespace AlgorithmApp
         public void run()
         {
             Console.WriteLine("EightQueen");
-            int[] queens1 = new int[8];
-            int[] queens2 = new int[8];
-            //Init array
-            for (int i = 0; i < queens1.Length; i++)
-                queens1[i] = 0;
-            for (int i = 0; i < queens2.Length; i++)
-                queens2[i] = 0;
             int count = 0;
             //Find answer
             Console.WriteLine(isSafe(new int[8] { 4, 6, 8, 2, 7, 1, 3, 0 }, 7, 5));
-            findOne(queens1, 0, false);
-            //findAll(queens2, 0, ref count);
-            Console.WriteLine("Find all total : " + count);
+            //Find one answer
+            Console.WriteLine("# Try find one answer");
+            printf(find(newIntArray(8,0), 0, false, out count));
+            //Find all answer
+            Console.WriteLine("# Try find all answer");
+            printf(find(newIntArray(8, 0), 0, true, out count));
+            Console.WriteLine("# Total : " + count);
+            //count = 0;
+            //depthFind(newIntArray(8,0), 0, ref count);
+            //Console.WriteLine("Find all total : " + count);
             Console.WriteLine("Completed");
         }
 
-        public void findOne(int[] queens, int k, bool findAll)
+        public List<int[]> find(int[] queens, int k, bool findAll, out int count)
         {
-            bool isJumped;
-            int count = 0;
+            bool isJumped;//Determine if a queen is jumped.
+            count = 0;
+            var answers = new List<int[]>();
             while(k < queens.Length)
             {
                 isJumped = true;
-                for (int i = queens[k] + 1; i <= 8; i++)
+                for (int i = queens[k] + 1; i <= queens.Length; i++)
                 {
                     if (isSafe(queens, k, i))
                     {
@@ -401,15 +402,8 @@ namespace AlgorithmApp
                 }
                 if(k == queens.Length)
                 {
-                    if(findAll)
-                        k--;
-                    else
-                    {
-                        for (int i = 0; i < queens.Length; i++)
-                            Console.Write(queens[i] + " ");
-                        Console.WriteLine();
-                        printf(queens);
-                    }
+                    if (findAll) k--;
+                    answers.Add(copy(queens));
                     count++;
                 }
                 if (isJumped)
@@ -417,15 +411,12 @@ namespace AlgorithmApp
                     queens[k] = 0;
                     k--;
                 }
-                if(k < 0)
-                {
-                    break;
-                }
+                if(k < 0) break;
             }
-            Console.WriteLine("Total : " + count);
+            return answers;
         }
 
-        public void findAll(int[] queens, int k, ref int count)
+        public void depthFind(int[] queens, int k, ref int count)
         {
             if (k == queens.Length)
             {
@@ -440,7 +431,7 @@ namespace AlgorithmApp
                     if (isSafe(queens, k, i))
                     {
                         queens[k] = i;
-                        findAll(queens, k + 1, ref count);
+                        depthFind(queens, k + 1, ref count);
                         queens[k] = 0;
                     }
                 }
@@ -468,7 +459,36 @@ namespace AlgorithmApp
             return true;
         }
 
+        private int[] copy(int[] a)
+        {
+            var aCopy = new int[a.Length];
+            for (int i = 0; i < a.Length; i++)
+                aCopy[i] = a[i];
+            return aCopy;
+        }
+
+        private int[] newIntArray(int length, int data)
+        {
+            var a = new int[length];
+            for (int i = 0; i < a.Length; i++)
+                a[i] = data;
+            return a;
+        }
+
+        private void printf(IEnumerable<int[]> arrays)
+        {
+            foreach(var a in arrays)
+                printf(a);
+        }
+
         private void printf(int[] a)
+        {
+            for (int i = 0; i < a.Length; i++)
+                Console.Write(a[i] + " ");
+            Console.WriteLine();
+        }
+
+        private void printfTable(int[] a)
         {
             for (int i = 0; i < a.Length; i++)
             {
