@@ -376,15 +376,16 @@ namespace AlgorithmApp
             int count = 0;
             //Find answer
             Console.WriteLine(isSafe(new int[8] { 4, 6, 8, 2, 7, 1, 3, 0 }, 7, 5));
-            findOne(queens1, 0);
-            findAll(queens2, 0, ref count);
+            findOne(queens1, 0, false);
+            //findAll(queens2, 0, ref count);
             Console.WriteLine("Find all total : " + count);
             Console.WriteLine("Completed");
         }
 
-        public void findOne(int[] queens, int k)
+        public void findOne(int[] queens, int k, bool findAll)
         {
             bool isJumped;
+            int count = 0;
             while(k < queens.Length)
             {
                 isJumped = true;
@@ -398,6 +399,19 @@ namespace AlgorithmApp
                         break;
                     }
                 }
+                if(k == queens.Length)
+                {
+                    if(findAll)
+                        k--;
+                    else
+                    {
+                        for (int i = 0; i < queens.Length; i++)
+                            Console.Write(queens[i] + " ");
+                        Console.WriteLine();
+                        printf(queens);
+                    }
+                    count++;
+                }
                 if (isJumped)
                 {
                     queens[k] = 0;
@@ -405,14 +419,10 @@ namespace AlgorithmApp
                 }
                 if(k < 0)
                 {
-                    System.Diagnostics.Debug.WriteLine("No result");
                     break;
                 }
             }
-            for (int i = 0; i < queens.Length; i++)
-                Console.Write(queens[i] + " ");
-            Console.WriteLine();
-            printf(queens);
+            Console.WriteLine("Total : " + count);
         }
 
         public void findAll(int[] queens, int k, ref int count)
@@ -420,8 +430,8 @@ namespace AlgorithmApp
             if (k == queens.Length)
             {
                 count++;
-                Console.WriteLine("\n --------Method " + count + " start --------");
-                printf(queens);
+                //Console.WriteLine("\n --------Method " + count + " start --------");
+                //printf(queens);
             }
             else
             {
