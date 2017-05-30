@@ -367,15 +367,19 @@ namespace AlgorithmApp
         {
             Console.WriteLine("EightQueen");
             int count = 0;
+
             //Find answer
             Console.WriteLine(isSafe(new int[8] { 4, 6, 8, 2, 7, 1, 3, 0 }, 7, 5));
+
             //Find one answer
             Console.WriteLine("# Try find one answer");
             printf(find(newIntArray(8,0), 0, false, out count));
+
             //Find all answer
             Console.WriteLine("# Try find all answer");
             printf(find(newIntArray(8, 0), 0, true, out count));
             Console.WriteLine("# Total : " + count);
+
             //count = 0;
             //depthFind(newIntArray(8,0), 0, ref count);
             //Console.WriteLine("Find all total : " + count);
