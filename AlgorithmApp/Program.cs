@@ -43,8 +43,9 @@ namespace AlgorithmApp
             //Not solve -> Use long time
             //new HorseGoTest().run();
 
-            new WordChains().run();
+            //new WordChains().run();
 
+            new EightQueen().run();
             Console.ReadKey();
         }
 
@@ -360,6 +361,115 @@ namespace AlgorithmApp
         }
     }
 
+    class EightQueen
+    {
+        public void run()
+        {
+            Console.WriteLine("EightQueen");
+            int[] queens1 = new int[8];
+            int[] queens2 = new int[8];
+            //Init array
+            for (int i = 0; i < queens1.Length; i++)
+                queens1[i] = 0;
+            for (int i = 0; i < queens2.Length; i++)
+                queens2[i] = 0;
+            int count = 0;
+            //Find answer
+            Console.WriteLine(isSafe(new int[8] { 4, 6, 8, 2, 7, 1, 3, 0 }, 7, 5));
+            findOne(queens1, 0);
+            findAll(queens2, 0, ref count);
+            Console.WriteLine("Find all total : " + count);
+            Console.WriteLine("Completed");
+        }
+
+        public void findOne(int[] queens, int k)
+        {
+            bool isJumped;
+            while(k < queens.Length)
+            {
+                isJumped = true;
+                for (int i = queens[k] + 1; i <= 8; i++)
+                {
+                    if (isSafe(queens, k, i))
+                    {
+                        isJumped = false;
+                        queens[k] = i;
+                        k++;
+                        break;
+                    }
+                }
+                if (isJumped)
+                {
+                    queens[k] = 0;
+                    k--;
+                }
+                if(k < 0)
+                {
+                    System.Diagnostics.Debug.WriteLine("No result");
+                    break;
+                }
+            }
+            for (int i = 0; i < queens.Length; i++)
+                Console.Write(queens[i] + " ");
+            Console.WriteLine();
+            printf(queens);
+        }
+
+        public void findAll(int[] queens, int k, ref int count)
+        {
+            if (k == queens.Length)
+            {
+                count++;
+                Console.WriteLine("\n --------Method " + count + " start --------");
+                printf(queens);
+            }
+            else
+            {
+                for (int i = queens[k] + 1; i <= 8; i++)
+                {
+                    if (isSafe(queens, k, i))
+                    {
+                        queens[k] = i;
+                        findAll(queens, k + 1, ref count);
+                        queens[k] = 0;
+                    }
+                }
+            }
+        }
+
+        //Check if it's safe when place value in k
+        //Notice that k is the index of value in hole array
+        //When you find the n answer, k = n -1
+        private bool isSafe(int[] hole, int k, int v)
+        {
+            if (v == 0) return false;
+            int vd = 0;/*The differ of values*/
+            int id = 0;/*The differ of indexes*/
+            for (int i = 0; i < k; i++)
+            {
+                if (hole[i] == 0 ) continue;
+                if (hole[i] == v)
+                    return false;
+                vd = hole[i] - v;
+                id = i - k;
+                if (vd == id || vd == -id)
+                    return false;
+            }
+            return true;
+        }
+
+        private void printf(int[] a)
+        {
+            for (int i = 0; i < a.Length; i++)
+            {
+                for (int j = 1; j <= a.Length; j++)
+                {
+                    Console.Write(string.Format(" | {0}", j == a[i] ? a[i].ToString() : " "));
+                }
+                Console.WriteLine(" |\n ---------------------------------");
+            }
+        }
+    }
 
     class WordChains
     {
