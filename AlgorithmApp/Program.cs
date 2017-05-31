@@ -388,17 +388,15 @@ namespace AlgorithmApp
 
         public List<int[]> find(int[] queens, int k, bool findAll, out int count)
         {
-            bool isJumped;//Determine if a queen is jumped.
             count = 0;
             var answers = new List<int[]>();
+            int i = 0;
             while(k < queens.Length)
             {
-                isJumped = true;
-                for (int i = queens[k] + 1; i <= queens.Length; i++)
+                for (i = queens[k] + 1; i <= queens.Length; i++)
                 {
                     if (isSafe(queens, k, i))
                     {
-                        isJumped = false;
                         queens[k] = i;
                         k++;
                         break;
@@ -410,7 +408,7 @@ namespace AlgorithmApp
                     answers.Add(copy(queens));
                     count++;
                 }
-                if (isJumped)
+                if (i > queens.Length)
                 {
                     queens[k] = 0;
                     k--;
